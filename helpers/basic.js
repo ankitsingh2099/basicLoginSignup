@@ -1,6 +1,8 @@
 const rootPrefix = '..',
   coreConstants = require(rootPrefix + '/coreConstants');
 
+const crypto = require('crypto');
+
 class BasicHelper {
   /**
    * Log date format.
@@ -25,6 +27,42 @@ class BasicHelper {
       '.' +
       date.getMilliseconds()
     );
+  }
+  
+  /**
+   * generate random string
+   *
+   * @param length
+   * @returns {Promise<string>}
+   * @private
+   */
+  async _generateRandomString(length) {
+    const oThis = this;
+    
+    return crypto.randomBytes(Math.ceil(length/2))
+      .toString('hex') /** convert to hexadecimal format */
+      .slice(0,length);
+  }
+  
+  /**
+   * Invert JSON.
+   *
+   * @param {object} obj
+   *
+   * @returns {object}
+   */
+  invert(obj) {
+    const ret = {};
+    
+    for (const key in obj) {
+      ret[obj[key]] = key;
+    }
+    
+    return ret;
+  }
+  
+  isProduction() {
+    return coreConstants.environment === 'production';
   }
 }
 

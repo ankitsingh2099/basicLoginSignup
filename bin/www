@@ -11,8 +11,6 @@ const rootPrefix = '..',
   coreConstants = require(rootPrefix + '/coreConstants');
 
 const app = require(rootPrefix + '/app');
-const models = require(rootPrefix + '/models');
-
 
 /**
  * Normalize a port into a number, string, or false.
@@ -38,7 +36,7 @@ function normalizePort(val) {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PA_PORT);
+var port = normalizePort(process.env.WP_PORT);
 app.set('port', port);
 
 /**
@@ -56,9 +54,7 @@ function listen() {
   server.on('listening', onListening);
 }
 
-models.sequelize.sync().then(function() {
-  listen();
-});
+listen();
 
 /**
  * Event listener for HTTP server "error" event.

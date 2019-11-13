@@ -441,6 +441,49 @@ class CommonValidator {
     
     return false;
   }
+  
+  /**
+   * Check if email id is valid or not.
+   *
+   * @param {string} variable: variable
+   *
+   * @returns {boolean}
+   */
+  static validateEmailId(variable) {
+    if (!CommonValidator.validateString(variable)) {
+      return false;
+    }
+    
+    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(variable);
+  }
+  
+  /**
+   * Check if password is valid or not
+   *
+   * @param variable
+   * @returns {boolean}
+   */
+  static validatePasswordString(variable) {
+    if (!CommonValidator.validateString(variable)) {
+      return false;
+    }
+    
+    return  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$/.test(variable);
+  }
+  
+  /**
+   * Check if password is valid or not
+   *
+   * @param variable
+   * @returns {boolean}
+   */
+  static validateMobileNumber(variable) {
+    if (!CommonValidator.validateString(variable)) {
+      return false;
+    }
+    
+    return  /^(?=.*\d)[\d]{10}$/.test(variable);
+  }
 }
 
 module.exports = CommonValidator;

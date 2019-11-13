@@ -9,7 +9,15 @@ class CoreConstants {
   }
   
   get APP_NAME() {
-    return process.env.SA_APP_NAME;
+    return process.env.WP_APP_NAME;
+  }
+  
+  get PA_COOKIE_DOMAIN() {
+    return process.env.WP_COOKIE_DOMAIN;
+  }
+  
+  get COOKIE_SECRET() {
+    return process.env.WP_COOKIE_SECRET;
   }
 }
 

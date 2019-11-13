@@ -16,7 +16,7 @@ const basicHelper = require(rootPrefix + '/helpers/basic'),
   customMiddleware = require(rootPrefix + '/helpers/customMiddleware'),
   sanitizer = require(rootPrefix + '/helpers/sanitizer');
 
-const apiRoutes = require(rootPrefix + '/routes/api/index');
+const apiRoutes = require(rootPrefix + '/routes/index');
 
 //const errorConfig = basicHelper.fetchErrorConfig(apiVersions.v1);
 
@@ -105,7 +105,7 @@ const setResponseHeader = async function(req, res, next) {
 // If the process is not a master
 
 // Set worker process title
-process.title = 'Smallcase api node worker';
+process.title = 'Whitepanda api node worker';
 
 // Create express application instance
 const app = express();
@@ -144,7 +144,7 @@ app.use(setResponseHeader);
 /**
  * NOTE: API routes where first sanitize and then assign params
  */
-app.use('/api', sanitizer.sanitizeBodyAndQuery, assignParams, apiRoutes);
+app.use('/', sanitizer.sanitizeBodyAndQuery, assignParams, apiRoutes);
 
 // Catch 404
 app.use(function(req, res, next) {

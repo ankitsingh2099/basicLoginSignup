@@ -2,12 +2,6 @@
 # Core ENV Details
 export WP_ENVIRONMENT='development'
 export WP_PORT=3000
-
-# Database details
-export WP_MYSQL_CONNECTION_POOL_SIZE='3'
-
-# mysql main db
-export MAIN_DB_WP_HOST='localhost'
-export MAIN_DB_WP_USER='root'
-export MAIN_DB_WP_PASSWORD='root'
-export MAIN_DB_WP_NAME='whitepanda'
+export WP_COOKIE_DOMAIN='localhost'
+export WP_APP_NAME='whitepanda'
+export WP_COOKIE_SECRET='aa5298d3a3fe181a3a52d085ee1525df5asa498337f8f3b76ca7df0a5de3211b'
