@@ -45,6 +45,17 @@ class BasicHelper {
   }
   
   /**
+   * Create MD5.
+   *
+   * @param {string} string
+   */
+  createMd5Digest(string) {
+    return crypto.createHash('md5')
+      .update(string)
+      .digest('hex');
+  }
+  
+  /**
    * Invert JSON.
    *
    * @param {object} obj

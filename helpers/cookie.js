@@ -35,6 +35,15 @@ class CookieHelper {
     // Set cookie
     responseObject.cookie(userConstants.loginCookieName, cookieValue, options); // Options is optional.
   }
+  
+  createLoginCookieValue(userId){
+    const oThis = this,
+      currentTimeStamp = Date.now();
+    
+    let stringToSign = userId + ':' + currentTimeStamp + coreConstants.COOKIE_SECRET;
+    
+    return userId + ':' + currentTimeStamp + ':' + basicHelper.createMd5Digest(stringToSign);
+  }
 }
 
 const cookieHelperObj = new CookieHelper();
