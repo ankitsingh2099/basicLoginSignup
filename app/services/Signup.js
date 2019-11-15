@@ -1,5 +1,7 @@
 const rootPrefix = '../..',
+  ServiceBase = require(rootPrefix + '/app/services/Base'),
   CommonValidators = require(rootPrefix + '/helpers/validators'),
+  cookieHelper = require(rootPrefix + '/helpers/cookie'),
   basicHelper = require(rootPrefix + '/helpers/basic'),
   UserModel = require(rootPrefix + '/models/User');
 
@@ -10,14 +12,14 @@ const crypto = require('crypto');
  *
  * @Class
  */
-class Signup{
+class Signup extends ServiceBase{
   /**
-   *
    *
    * @param params
    * @constructor
    */
   constructor(params){
+    super(params);
     const oThis = this;
     
     oThis.password = params.password;
@@ -30,7 +32,7 @@ class Signup{
    *
    * @returns {Promise<void>}
    */
-  async perform(){
+  async _asyncPerform(){
     const oThis = this;
     
     await oThis._validateAndSanitize();
@@ -45,7 +47,7 @@ class Signup{
     
     return {
       success: true,
-      cookieValue: 'qwertyuiop'
+      cookieValue: oThis.cookieValue
     }
   }
   
@@ -109,16 +111,20 @@ class Signup{
   async _insertInUsers() {
     const oThis = this;
   
-    await UserModel.create({
+    let insertResponse = await UserModel.create({
       email_id: oThis.emailId,
       password: oThis.passwordHash,
       mobile_number: oThis.mobileNumber,
       encryption_salt: oThis.encryptionSalt
     });
+    
+    oThis.userId = insertResponse.dataValues.id;
   }
   
   async _prepareCookieValue() {
     const oThis = this;
+    
+    oThis.cookieValue = cookieHelper.createLoginCookieValue(oThis.userId);
   }
   
 }
