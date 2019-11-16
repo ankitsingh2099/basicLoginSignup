@@ -7,13 +7,13 @@ class LoginFactory{
   
   }
   
-  static provide(params){
-    switch(params.login_type){
-      case "OTP": {
+  static async provide(params){
+    switch(params.type){
+      case "otp": {
         return new MobileOTPLogin(params).perform();
         break;
       }
-      case "EMAIL": {
+      case "email": {
         return new EmailLogin(params).perform();
         break;
       }

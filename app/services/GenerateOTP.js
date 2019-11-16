@@ -7,13 +7,12 @@ const rootPrefix = '../..',
   coreConstants = require(rootPrefix + '/coreConstants'),
   CommonValidators = require(rootPrefix + '/helpers/validators');
 
-class MobileOTPLogin extends ServicesBase{
+class GenerateOTP extends ServicesBase{
   constructor(params){
     super(params);
     const oThis = this;
     
     oThis.mobileNumber = params.mobile_number;
-    oThis.otp = params.otp;
   }
   
   async _asyncPerform(){
@@ -23,14 +22,11 @@ class MobileOTPLogin extends ServicesBase{
     
     await oThis._fetchUserDetails();
     
-    await oThis._verifyOTP();
-  
-    await oThis._prepareCookieValue();
-  
+    await oThis._generateOTP();
+    
     return {
       success: true,
-      code: 200,
-      cookieValue: oThis.cookieValue
+      code: 200
     }
   }
   
@@ -44,20 +40,11 @@ class MobileOTPLogin extends ServicesBase{
         error: 'Invalid Mobile Number'
       })
     }
-  
-    oThis.otp = parseInt(oThis.otp);
-    if(!CommonValidators.validateOTP(oThis.otp)){
-      return Promise.reject({
-        success: false,
-        code: 422,
-        error: 'Invalid OTP'
-      })
-    }
   }
   
   async _fetchUserDetails() {
     const oThis = this;
-  
+    
     let dbRow = await UserModel.findOne({ where: {mobile_number: oThis.mobileNumber} });
     
     if(!dbRow){
@@ -71,29 +58,30 @@ class MobileOTPLogin extends ServicesBase{
     oThis.userDetails = dbRow.dataValues;
   }
   
-  async _verifyOTP() {
+  async _generateOTP() {
     const oThis = this;
-  
+    
     let options = {
       "method": "POST",
       "hostname": "api.msg91.com",
       "port": null,
-      "path": `/api/v5/otp/verify?otp=${oThis.otp}&authkey=${coreConstants.MSG91_AUTH_KEY}&mobile=+91${oThis.mobileNumber}`,
-      "headers": {}
+      "path": `/api/v5/otp?authkey=${coreConstants.MSG91_AUTH_KEY}&mobile=+91${oThis.mobileNumber}&template_id=${coreConstants.MSG91_OTP_TEMPLATE}&otp_length=6`,
+      "headers": {
+        "content-type": "application/json"
+      }
     };
     
     let response = await httpRequest.perform(options);
     
-    if(!response.responseData ){
+    if(!response.responseData){
       return Promise.reject({
         success: false,
         code: 500,
-        error: 'Error in OTP validation.'
+        error: 'Generate OTP failed'
       })
     }
   
     let responseData = null;
-    
     try {
       responseData = JSON.parse(response.responseData)
     } catch(err){
@@ -101,24 +89,18 @@ class MobileOTPLogin extends ServicesBase{
       return Promise.reject({
         success: false,
         code: 500,
-        error: 'Error in OTP validation'
+        error: 'Generate OTP failed'
       })
     }
     
     if(responseData.type != "success"){
       return Promise.reject({
         success: false,
-        code: 422,
-        error: 'OTP not valid.'
+        code: 500,
+        error: 'Generate OTP failed'
       })
     }
   }
-  
-  async _prepareCookieValue() {
-    const oThis = this;
-    
-    oThis.cookieValue = cookieHelper.createLoginCookieValue(oThis.userDetails.id);
-  }
 }
 
-module.exports = MobileOTPLogin;
+module.exports = GenerateOTP;

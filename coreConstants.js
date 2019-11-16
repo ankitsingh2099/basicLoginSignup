@@ -23,6 +23,10 @@ class CoreConstants {
   get MSG91_AUTH_KEY() {
     return process.env.MSG91_AUTH_KEY;
   }
+  
+  get MSG91_OTP_TEMPLATE() {
+    return process.env.MSG91_OTP_TEMPLATE;
+  }
 }
 
 module.exports = new CoreConstants();

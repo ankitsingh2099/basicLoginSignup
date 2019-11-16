@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Mobile Login Form</title>
+
+
+    <link rel="stylesheet"
+          href=
+                  "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity=
+                  "sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="/stylesheet/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      function generateOTP(){
+        let url = '/generate-otp?mobile_number=' + document.getElementById("mobile_number").value;
+        console.log('---url---',url);
+        $.ajax({
+          url: url,
+          type: 'POST',
+          contentType: 'application/json; charset=utf-8',
+          success: function (response) {
+            document.getElementById("error_field").value = response;
+          },
+          error: function (err) {
+            document.getElementById("error_field").value = err;
+          }
+        })
+      }
+
+      function validateOTP(){
+        $.post('login',{
+          mobile_number: document.getElementById("mobile_number").value,
+          otp: document.getElementById("otp").value,
+          type: 'otp'
+        }, function(response) {
+          if(response.success){
+            window.location = "/success";
+          } else {
+            document.getElementById("error_field").innerHTML = response.error;
+          }
+        }).fail(function(err){
+          document.getElementById("error_field").innerHTML = err.responseJSON.error;
+        });
+      }
+    </script>
+
+</head>
+<body>
+
+<br>
+<br>
+<br>
+<div class="container" >
+    <div class="row">
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md-6 main">
+
+            <form action="javascript:validateOTP()" method="post">
+
+                <h1> Login form </h1>
+
+                <input class="box" type="text" name="mobile_number" id="mobile_number"
+                       placeholder="Mobile Number " required/><br>
+
+                <input class="box" type="text" name="otp" id="otp"
+                       placeholder="OTP" required/><br>
+
+                <input type="hidden" id="type" name="type" value="otp">
+                <br>
+                <input type="submit" id="submit"
+                       name="SubmitDetails" value="Submit" /><br>
+
+            </form>
+
+            <a href="/login?type=email" class="button--style-blue">Login With Email Id</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <a href="javascript:generateOTP()" class="button--style-blue">Generate OTP</a><br>
+            <p id="error_field"></p>
+
+        </div>
+
+
+        <div class="col-md-3">
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
