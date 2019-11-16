@@ -34,4 +34,21 @@ exports.post = function (req, res) {
       }
     }
   });
-}
+};
+
+exports.login = function (req, res) {
+  const LoginFactory = require(rootPrefix + '/app/services/LoginFactory');
+  LoginFactory.provide(req.body).then(function(rsp){
+    if(!rsp){
+      res.status(500).json({});
+    } else {
+      if(rsp.success){
+        cookieHelper.setLoginCookie(res,rsp.cookieValue);
+        res.status(200).json({success: true});
+        res.send();
+      } else {
+        res.status(rsp.code).json(rsp);
+      }
+    }
+  });
+};

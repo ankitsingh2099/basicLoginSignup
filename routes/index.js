@@ -10,4 +10,6 @@ router.use(cookieParser(coreConstant.COOKIE_SECRET));
 router.get('/signup', UsersController.get);
 router.post('/signup', UsersController.post);
 
+router.post('/login',UsersController.login);
+
 module.exports = router;

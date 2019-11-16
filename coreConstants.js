@@ -19,6 +19,10 @@ class CoreConstants {
   get COOKIE_SECRET() {
     return process.env.WP_COOKIE_SECRET;
   }
+  
+  get MSG91_AUTH_KEY() {
+    return process.env.MSG91_AUTH_KEY;
+  }
 }
 
 module.exports = new CoreConstants();

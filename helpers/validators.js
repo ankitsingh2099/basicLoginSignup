@@ -472,7 +472,7 @@ class CommonValidator {
   }
   
   /**
-   * Check if password is valid or not
+   * Check if mobile number is valid or not
    *
    * @param variable
    * @returns {boolean}
@@ -483,6 +483,20 @@ class CommonValidator {
     }
     
     return  /^(?=.*\d)[\d]{10}$/.test(variable);
+  }
+  
+  /**
+   * Check if otp is valid or not
+   *
+   * @param variable
+   * @returns {boolean}
+   */
+  static validateOTP(variable) {
+    if (!CommonValidator.validateInteger(variable)) {
+      return false;
+    }
+    
+    return  /^(?=.*\d)[\d]{6}$/.test(variable);
   }
 }
 

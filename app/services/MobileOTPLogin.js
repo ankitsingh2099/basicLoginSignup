@@ -3,15 +3,17 @@ const rootPrefix = '../..',
   basicHelper = require(rootPrefix + '/helpers/basic'),
   UserModel = require(rootPrefix + '/models/User'),
   cookieHelper = require(rootPrefix + '/helpers/cookie'),
+  httpRequest = require(rootPrefix + '/lib/httpRequest'),
+  coreConstants = require(rootPrefix + '/coreConstants'),
   CommonValidators = require(rootPrefix + '/helpers/validators');
 
-class Login extends ServicesBase{
+class MobileOTPLogin extends ServicesBase{
   constructor(params){
     super(params);
     const oThis = this;
     
-    oThis.emailId = params.email_id;
-    oThis.password = params.password;
+    oThis.mobileNumber = params.mobile_number;
+    oThis.otp = params.otp;
   }
   
   async _asyncPerform(){
@@ -21,7 +23,7 @@ class Login extends ServicesBase{
     
     await oThis._fetchUserDetails();
     
-    await oThis._verifyPassword();
+    await oThis._verifyOTP();
   
     await oThis._prepareCookieValue();
   
@@ -35,41 +37,57 @@ class Login extends ServicesBase{
   async _validateAndSanitize() {
     const oThis = this;
     
-    if(!CommonValidators.validateEmailId(oThis.emailId)){
-      return {
+    if(!CommonValidators.validateMobileNumber(oThis.mobileNumber)){
+      return Promise.reject({
         success: false,
         code: 422,
-        error: 'Invalid Email Id'
-      }
+        error: 'Invalid Mobile Number'
+      })
+    }
+  
+    if(!CommonValidators.validateOTP(oThis.otp)){
+      return Promise.reject({
+        success: false,
+        code: 422,
+        error: 'Invalid OTP'
+      })
     }
   }
   
   async _fetchUserDetails() {
     const oThis = this;
   
-    let dbRow = await UserModel.findOne({ where: {email_id: oThis.emailId} });
+    let dbRow = await UserModel.findOne({ where: {mobile_number: oThis.mobileNumber} });
     
     if(!dbRow){
       return Promise.reject({
         success: false,
         code: 422,
-        error: 'Given email id does not exist in our system.'
+        error: 'Given mobile number does not exist in our system.'
       })
     }
     
     oThis.userDetails = dbRow.dataValues;
   }
   
-  async _verifyPassword() {
+  async _verifyOTP() {
     const oThis = this;
+  
+    let options = {
+      "method": "POST",
+      "hostname": "api.msg91.com",
+      "port": null,
+      "path": `/api/v5/otp/verify?otp=${oThis.otp}&authkey=${coreConstants.MSG91_AUTH_KEY}&mobile=+91${oThis.mobileNumber}`,
+      "headers": {}
+    };
     
-    let createdPasswordHash = await basicHelper._generatePasswordHash(oThis.password, oThis.userDetails.encryption_salt);
+    let response = await httpRequest.perform(options);
     
-    if(createdPasswordHash != oThis.userDetails.password){
+    if(!response.responseData || !response.responseData.type || response.responseData.type != "success"){
       return Promise.reject({
         success: false,
         code: 422,
-        error: 'Incorrect password.'
+        error: 'Incorrect OTP'
       })
     }
   }
@@ -81,4 +99,4 @@ class Login extends ServicesBase{
   }
 }
 
-module.exports = Login;
+module.exports = MobileOTPLogin;

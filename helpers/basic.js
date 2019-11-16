@@ -72,8 +72,31 @@ class BasicHelper {
     return ret;
   }
   
+  /**
+   * Is the environment production.
+   *
+   * @returns {boolean}
+   */
   isProduction() {
     return coreConstants.environment === 'production';
+  }
+  
+  
+  /**
+   * Generate password hash.
+   *
+   * @param password
+   * @param salt
+   * @returns {Promise<string>}
+   * @private
+   */
+  async _generatePasswordHash(password, salt) {
+    const oThis = this;
+    
+    let hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    let value = hash.digest('hex');
+    return value;
   }
 }
 

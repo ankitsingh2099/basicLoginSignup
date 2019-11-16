@@ -35,11 +35,14 @@ class Signup extends ServiceBase{
   async _asyncPerform(){
     const oThis = this;
     
-    await oThis._validateAndSanitize();
+    let response = await oThis._validateAndSanitize();
+    if(!response.success){
+      return response;
+    }
     
     oThis.encryptionSalt = await basicHelper._generateRandomString(10);
     
-    oThis.passwordHash = await oThis._generatePasswordHash(oThis.password, oThis.encryptionSalt);
+    oThis.passwordHash = await basicHelper._generatePasswordHash(oThis.password, oThis.encryptionSalt);
     
     await oThis._insertInUsers();
     
@@ -83,23 +86,10 @@ class Signup extends ServiceBase{
         error: 'Invalid Mobile Number'
       }
     }
-  }
-  
-  /**
-   * Generate password hash.
-   *
-   * @param password
-   * @param salt
-   * @returns {Promise<string>}
-   * @private
-   */
-  async _generatePasswordHash(password, salt) {
-    const oThis = this;
-  
-    let hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
-    hash.update(password);
-    let value = hash.digest('hex');
-    return value;
+    
+    return {
+      success: true
+    }
   }
   
   /**
