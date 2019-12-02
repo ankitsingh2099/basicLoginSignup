@@ -1,4 +1,4 @@
-# Whitepanda
+# Basic Login Signup
 
 ####Enter database related details in the following file
 ```
