@@ -1,26 +1,26 @@
 # Basic Login Signup
 
-####Enter database related details in the following file
+#### Enter database related details in the following file
 ```
 config/config.json
 ```
 
-####Create Database
+#### Create Database
 ```
 node executables/createWhitepandaDatabase.js
 ```
 
-####Create Table
+#### Create Table
 ```
 node_modules/.bin/sequelize db:migrate
 ```
 
-####Source environment variable
+#### Source environment variable
 ```
 source set_env_var.sh
 ```
 
-####Start the server
+#### Start the server
 ```
 node ./bin/www
 ```
