@@ -10,8 +10,6 @@ const fs = require('fs'),
 const rootPrefix = '..',
   coreConstants = require(rootPrefix + '/coreConstants');
 
-console.log('**');
-
 const app = require(rootPrefix + '/app');
 
 /**
@@ -75,12 +73,12 @@ function onError(error) {
   // Handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES': {
-      console.log('b_w_1', bind + ' requires elevated privileges');
+      console.log(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     }
     case 'EADDRINUSE': {
-      console.log('b_w_2', bind + ' is already in use');
+      console.log(bind + ' is already in use');
       process.exit(1);
       break;
     }
